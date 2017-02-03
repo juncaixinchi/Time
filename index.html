@@ -2,99 +2,160 @@
 <html>
 <head>
 	<title>Time</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript">
+		function Calcu()
+		{
+			var age=Calcu_Time();
+			if(age<=80)
+			{			
+				document.getElementById("show_card").hidden=null;
+				Draw_plot(age);
+			}
+			document.getElementById("pick_time").hidden="hidden";
+			document.getElementById("show_dur").hidden=null;
+			document.getElementById("reload_button").hidden=null;
+		}
 		function Calcu_Time()
 		{
 			var time_check;
 			var br="<br>";
-				//变换为文本，强行获得出生的年月日
-				var Birth=document.getElementById("birthday").value;//要注意Birth非date类型的对象
-				var x=Birth.toString();
-				x=x.split("-");
-				var yy=x[0];
-				var mm=x[1];
-				var dd=x[2];
-				//获得目前的时间
-				var Now=new Date();
-				//转化为19700101至该日期的毫秒数
-				var ss_now = Date.parse(Now);
-				var ss_birth = Date.parse(Birth);
-				var dur_second=(ss_now-ss_birth)/1000;
-				if(dur_second<0)
-				{
-					alert("请输入正确的日期！");
-					location.reload();
-				}
-				var dur_min=dur_second/60;
-				var dur_hour=dur_min/60;
-				var dur_day=dur_second/86400;
-				var dur_year=dur_second/31557600;
-				var dur_month=dur_year*12;
-				//利用toFixed()使结果中数字的位数稳定
-				dur_min=dur_min.toFixed(2);
-				dur_hour=dur_hour.toFixed(4);
-				dur_day=dur_day.toFixed(6);
-				dur_month=dur_month.toFixed(7);
-				dur_year=dur_year.toFixed(8);
-				dur_second=dur_second.toFixed(1);
-				document.getElementById("show_dur").hidden=null;
-				// document.getElementById("pick_time").hidden="hidden";
-				document.getElementById("year").innerHTML='你已经'+dur_year+'岁了！';
-				document.getElementById("month").innerHTML=dur_month;
-				document.getElementById("day").innerHTML=dur_day;
-				document.getElementById("hour").innerHTML=dur_hour;
-				document.getElementById("min").innerHTML=dur_min;
-				document.getElementById("second").innerHTML=dur_second;
-				time_check=setTimeout("Calcu_Time('birthday')",1000);//每一秒更新！
+			//变换为文本，强行获得出生的年月日
+			var Birth=document.getElementById("birthday").value;//要注意Birth非date类型的对象
+			var x=Birth.toString();
+			x=x.split("-");
+			var yy=x[0];
+			var mm=x[1];
+			var dd=x[2];
+			//获得目前的时间
+			var Now=new Date();
+			//转化为19700101至该日期的毫秒数
+			var ss_now = Date.parse(Now);
+			var ss_birth = Date.parse(Birth);
+			var dur_second=(ss_now-ss_birth)/1000;
+			if(dur_second<0)
+			{
+				alert("请输入正确的日期！");
+				location.reload();
 			}
-		</script>
-		<style type="text/css">
-			@font-face {
-				font-family: digit;
-				src: url('Font/digital-7_mono.ttf') format("truetype");
+			var dur_min=dur_second/60;
+			var dur_hour=dur_min/60;
+			var dur_day=dur_second/86400;
+			var dur_year=dur_second/31557600;
+			var dur_month=dur_year*12;
+			//利用toFixed()使结果中数字的位数稳定
+			dur_min=dur_min.toFixed(2);
+			dur_hour=dur_hour.toFixed(4);
+			dur_day=dur_day.toFixed(6);
+			dur_month=dur_month.toFixed(7);
+			dur_year=dur_year.toFixed(8);
+			dur_second=dur_second.toFixed(1);
+			// document.getElementById("pick_time").hidden="hidden";
+			document.getElementById("year").innerHTML='你已经'+dur_year+'岁了！';
+			document.getElementById("month").innerHTML=dur_month;
+			document.getElementById("day").innerHTML=dur_day;
+			document.getElementById("hour").innerHTML=dur_hour;
+			document.getElementById("min").innerHTML=dur_min;
+			document.getElementById("second").innerHTML=dur_second;
+			time_check=setTimeout("Calcu_Time('birthday')",1000);//每一秒更新！
+			return dur_year;
+		}
+		//绘制卡片网格
+		function Draw_plot(age){
+			var c=document.getElementById("myCanvas");
+			var cxt=c.getContext("2d");
+			cxt.fillStyle="#FFF";
+			cxt.fillRect(0,0,320,400);
+			for(var j=0;j<=9;j++){
+				cxt.moveTo(j*40,0);
+				cxt.lineTo(j*40,400);
+				cxt.stroke();
+				cxt.moveTo(0,j*40);
+				cxt.lineTo(320,j*40);
+				cxt.strokeStyle="#F3F2F1";
+				cxt.stroke();
 			}
-			table.time_during {
-				width:100%;
+			//根据年龄上色
+			for(var i=0;i<age;i++){
+				var column=Math.floor(i/8);
+				var line=i%8;
+				var time_draw=i*1000;
+				var func="draw("+column+","+line+")"
+				var t=setTimeout(func,100*i);
 			}
-			table.time_during td {
-				text-align:right;
-			}
-			#show_dur{
-				max-width:400px;
-				/*				border:1px solid #aaa;*/
-				margin: 0 auto;
-				font-family: digit;
-				font-size: 2em;
-/*				background-color: #fff;*/
-			}
-		</style>
-	</head>
-	<body bgcolor="#ffe">
-		<section style="text-align: center;">
-			<div id="pick_time">
-				<br>
-				<b>生命计算器</b>
-				<br>
-				<br>
-				你的生日：<input type="date" id="birthday" value="1993-01-01">
-				<input type="button" value="提交" onclick="Calcu_Time()">
-				<br>
-				<br>
-			</div>
-			<div id="show_dur" hidden="hidden">
-				<p id= "year"></p>
-				<br>
-				这相当于：
-				<br>
-				<table class="time_during" >
-					<tr><td><p id= "month"></p></td><td>月</td></tr>
-					<tr><td><p id= "day"></p></td><td>日</td></tr>
-					<tr><td><p id= "hour"></p></td><td>小时</td></tr>
-					<tr><td><p id= "min"></p></td><td>分</td></tr>
-					<tr><td><p id= "second"></p></td><td>秒</td></tr>
-				</table>
-			</div>
+		}
+		function reloadPage()
+		{
+			window.location.reload();
+		}
+		function draw(column,line){
+			var c=document.getElementById("myCanvas");
+			var cxt=c.getContext("2d");
+			cxt.fillStyle="#FF0000";
+			cxt.fillRect(40*line,40*column,40,40);
+		}
+	</script>
+	<style type="text/css">
+		body{
+			font-size: 2em;
+		}
+		@font-face {
+			font-family: digit;
+			src: url('Font/digital-7_mono.ttf') format("truetype");
+		}
+		table.time_during {
+			width:100%;
+		}
+		table.time_during td {
+			text-align:right;
+		}
+		#show_dur{
+			max-width:400px;
+			/*				border:1px solid #aaa;*/
+			margin: 0 auto;
+			font-family: digit;
 
-		</section>
-	</body>
-	</html>
+			/*				background-color: #fff;*/
+		}
+	</style>
+</head>
+<body bgcolor="#ffe">
+	<section style="text-align: center;">
+		<div id="pick_time">
+			<br>
+			<b>生命计算器</b>
+			<br>
+			<br>
+			你的生日：<input type="date" id="birthday" value="1993-01-01">
+			<input type="button" value="提交" onclick="Calcu()">
+			<br>
+			<br>
+		</div>
+		<div id="show_dur" hidden="hidden">
+			<p id= "year"></p>
+			这相当于：
+			<br>
+			<table class="time_during" >
+				<tr><td><p id= "month"></p></td><td>月</td></tr>
+				<tr><td><p id= "day"></p></td><td>日</td></tr>
+				<tr><td><p id= "hour"></p></td><td>小时</td></tr>
+				<tr><td><p id= "min"></p></td><td>分</td></tr>
+				<tr><td><p id= "second"></p></td><td>秒</td></tr>
+			</table>
+		</div>
+		<div id="show_card" hidden="hidden">
+			<p>如果人生是一张白纸：</p>
+			<canvas id="myCanvas" width="320px" height="400px" style="border:1px solid #c3c3c3;">
+				Your browser does not support the canvas element.
+			</canvas>
+			<p>红色部分就是你已经走过的生命<br>......</p>
+		</div>
+		<br>
+		
+		<div id="reload_button" hidden="hidden">
+			<input type="button" id="reload" value="重新选择" onclick="reloadPage()">
+		</div>
+	</section>
+</body>
+</html>
