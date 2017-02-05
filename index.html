@@ -7,13 +7,16 @@
 	<script type="text/javascript">
 		function Calcu()
 		{
+			resize();
 			var age=Calcu_Time();
 			if(age<=80)
 			{			
 				document.getElementById("show_card").hidden=null;
 				Draw_plot(age);
+			}else{
+				document.getElementById("show_card").hidden="hidden";
+				document.getElementById("show_dur").style.width="100%";
 			}
-			document.getElementById("pick_time").hidden="hidden";
 			document.getElementById("show_dur").hidden=null;
 			document.getElementById("reload_button").hidden=null;
 		}
@@ -95,10 +98,25 @@
 			cxt.fillStyle="#FF0000";
 			cxt.fillRect(40*line,40*column,40,40);
 		}
+		//自适应函数
+		function resize(){
+			width=document.body.clientWidth;
+			if(width<800)
+			{
+				document.getElementById("show_dur").style.width="100%";
+				document.getElementById("show_card").style.width="100%";
+			}
+			else{
+				document.getElementById("show_dur").style.width="400px";
+				document.getElementById("show_card").style.width="400px";
+			}
+		}
 	</script>
 	<style type="text/css">
 		body{
 			font-size: 2em;
+			background: linear-gradient(0deg, #F2F2F2 25%, #F5F5F5 0, #F5F5F5 50%, #F2F2F2 0, #F2F2F2 75%, #F5F5F5 0);
+			background-size: 100px 100px;
 		}
 		@font-face {
 			font-family: digit;
@@ -110,28 +128,49 @@
 		table.time_during td {
 			text-align:right;
 		}
-		#show_dur{
-			max-width:400px;
-			/*				border:1px solid #aaa;*/
+		.container{
+			text-align: center;
+			max-width: 810px;
+			width: 100%;
+			margin:0 auto;
+		}
+		#pick_time{
+			max-width: 800px;
+			width: 100%;
+			/*			border:1px solid #aaa;*/
 			margin: 0 auto;
+			text-align: center;
+			background: linear-gradient(90deg, #F2F2F2 25%, #F5F5F5 0, #F5F5F5 50%, #F2F2F2 0, #F2F2F2 75%, #F5F5F5 0);
+			background-size: 100px 100px;
+		}
+		#show_dur{
+			height: 640px;
 			font-family: digit;
-
-			/*				background-color: #fff;*/
+			float:left;
+			background: linear-gradient(45deg, #F2F2F2 25%, #F5F5F5 0, #F5F5F5 50%, #F2F2F2 0, #F2F2F2 75%, #F5F5F5 0);
+			background-size: 100px 100px;
+		}
+		#show_card{
+			height: 640px;
+			font-family: digit;
+			float:left;
+			background: linear-gradient(-45deg, #F2F2F2 25%, #F5F5F5 0, #F5F5F5 50%, #F2F2F2 0, #F2F2F2 75%, #F5F5F5 0);
+			background-size: 100px 100px;
 		}
 	</style>
 </head>
-<body bgcolor="#ffe">
-	<section style="text-align: center;">
-		<div id="pick_time">
-			<br>
-			<b>生命计算器</b>
-			<br>
-			<br>
-			你的生日：<input type="date" id="birthday" value="1993-01-01">
-			<input type="button" value="提交" onclick="Calcu()">
-			<br>
-			<br>
-		</div>
+<body onresize="resize()">
+	<div id="pick_time">
+		<br>
+		<b>生命计算器</b>
+		<br>
+		<br>
+		你的生日：<input type="date" id="birthday" value="1993-01-01">
+		<input type="button" value="提交" onclick="Calcu()">
+		<br>
+		<br>
+	</div>
+	<div class="container">
 		<div id="show_dur" hidden="hidden">
 			<p id= "year"></p>
 			这相当于：
@@ -149,13 +188,12 @@
 			<canvas id="myCanvas" width="320px" height="400px" style="border:1px solid #c3c3c3;">
 				Your browser does not support the canvas element.
 			</canvas>
-			<p>红色部分就是你已经走过的生命<br>......</p>
+			<p>红色部分就是走过的生命<br>......</p>
 		</div>
 		<br>
-		
-		<div id="reload_button" hidden="hidden">
+<!-- 		<div id="reload_button" hidden="hidden">
 			<input type="button" id="reload" value="重新选择" onclick="reloadPage()">
-		</div>
-	</section>
+		</div> -->
+	</div>
 </body>
 </html>
